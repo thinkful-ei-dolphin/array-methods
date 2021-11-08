@@ -1,5 +1,3 @@
-let input = process.argv;
-let searchTerm = input[2];
 let games = [
     {game:'Resident Evil Village', type:'Survival', cost:59.99, isMultiplayer:false},
     {game: 'Stardew Valley', type: 'Simulation', cost: 14.99, isMultiplayer:true },
@@ -17,34 +15,33 @@ let games = [
     {game: 'The Long Dark', type: 'Survival', cost: 20.00, isMultiplayer:false},
 ]
 
-function searchGames(search){
-    let foundGame = games.find(game=> game.game ===search);
-    console.log(`We have ${foundGame.game}, it costs ${foundGame.cost}.  
-    It is a ${foundGame.type} and ${foundGame.isMultiplayer?'it is multiplayer':'it is not multiplayer'}`);
+let acc=0;
+for(let game of games){
+    acc+=game.cost;
 }
+//console.log(`Total of game cost: ${acc}`);
 
-searchGames(searchTerm);
- 
-let firstMMO = games.find(game=>game.type==='MMO');
-//console.log(firstMMO);
+let totalCost = games.reduce((acc,game)=>acc+game.cost,0);
+//console.log(`Total of game cost: ${totalCost}`);
 
-let simGames = games.filter(game=>game.type==='Simulation');
-//console.log(simGames);
+//Categorization
 
-let expensiveGames = games.filter(game=> game.cost>20 && game.isMultiplayer);
-//console.log(expensiveGames);
+let catObj={};
+for(let game of games){
+    if(catObj[game.type]){
+        catObj[game.type].push(game);    //{'Survival': [ {game: 'Silent Hill 2', type: 'Survival', cost: 0.00, isMultiplayer:false}]}
+     }else{
+         catObj[game.type]=[game];
+     }
+}
+///console.log(catObj['MMO']);
 
-let gameSale = games.map(game=>{
-    if(game.cost === 59.99){
-        game.cost= 19.99;
+let reducedCatObj = games.reduce((acc, game)=>{
+    if(acc[game.type]){
+        acc[game.type].push(game);
+    } else{
+        acc[game.type]=[game];
     }
-    return game;
-});
-//console.log(gameSale);
-
-let areAnyGamesMultiplayer = games.some(game=>game.isMultiplayer===true);
-//console.log(`Are any of these games multiplayer? ${areAnyGamesMultiplayer}`);
-
-let areAllGamesSinglePlayer = games.every(game=>game.isMultiplayer===false);
-//console.log(`Are all of these games singleplayer? ${areAllGamesSinglePlayer}`);
-
+    return acc;
+},{})
+console.log(reducedCatObj);

@@ -1,5 +1,3 @@
-let input = process.argv;
-let searchTerm = input[2];
 let games = [
     {game:'Resident Evil Village', type:'Survival', cost:59.99, isMultiplayer:false},
     {game: 'Stardew Valley', type: 'Simulation', cost: 14.99, isMultiplayer:true },
@@ -17,34 +15,34 @@ let games = [
     {game: 'The Long Dark', type: 'Survival', cost: 20.00, isMultiplayer:false},
 ]
 
-function searchGames(search){
-    let foundGame = games.find(game=> game.game ===search);
-    console.log(`We have ${foundGame.game}, it costs ${foundGame.cost}.  
-    It is a ${foundGame.type} and ${foundGame.isMultiplayer?'it is multiplayer':'it is not multiplayer'}`);
-}
 
-searchGames(searchTerm);
- 
-let firstMMO = games.find(game=>game.type==='MMO');
-//console.log(firstMMO);
+let sorted=[];
 
-let simGames = games.filter(game=>game.type==='Simulation');
-//console.log(simGames);
-
-let expensiveGames = games.filter(game=> game.cost>20 && game.isMultiplayer);
-//console.log(expensiveGames);
-
-let gameSale = games.map(game=>{
-    if(game.cost === 59.99){
-        game.cost= 19.99;
+for (let i = 0; i < games.length; i++) {
+    let added = false;
+    for (let j = 0; j < sorted.length && !added; j++) {
+        if(games[i].cost < sorted[j].cost){
+            sorted.splice(j, 0, games[i]);
+            added=true;
+        }        
     }
-    return game;
-});
-//console.log(gameSale);
+    if(!added){
+        sorted.push(games[i]);
+    }    
+}
+//console.log(sorted);
 
-let areAnyGamesMultiplayer = games.some(game=>game.isMultiplayer===true);
-//console.log(`Are any of these games multiplayer? ${areAnyGamesMultiplayer}`);
+games.sort((gameA, gameB)=>{
+    if(gameA.cost < gameB.cost ){
+        return -1;
+    } else{
+        return 1;
+    }
+})
 
-let areAllGamesSinglePlayer = games.every(game=>game.isMultiplayer===false);
-//console.log(`Are all of these games singleplayer? ${areAllGamesSinglePlayer}`);
+games.sort((gameA,gameB)=>gameA.cost-gameB.cost);
 
+//console.log(games);
+
+games.sort((gameA,gameB)=>gameA.game.toLowerCase() > gameB.game.toLowerCase()? 1:-1);
+console.log(games)
